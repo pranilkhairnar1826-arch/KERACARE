@@ -14,3 +14,5 @@ services:
     envVars:
       - key: DATA_DIR
         value: /var/data
+      - key: NODE_VERSION
+        value: 20.x
