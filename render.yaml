@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: keracare-app
+    env: node
+    # Note: Persistent disks require at least the 'starter' plan ($7/mo). 
+    # If you remove the 'disk' and 'envVars' block below, it can deploy on the 'free' tier but the database will be wiped on restart.
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    disk:
+      name: keracare-sqlite-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
