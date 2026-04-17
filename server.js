@@ -7,16 +7,19 @@ const fs = require('fs');
 const multer = require('multer');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// Support dynamic data directory for Render persistent disks
+const DATA_DIR = process.env.DATA_DIR || __dirname;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')));
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
+const uploadsDir = path.join(DATA_DIR, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
@@ -24,7 +27,7 @@ if (!fs.existsSync(uploadsDir)) {
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        cb(null, uploadsDir);
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname);
@@ -33,7 +36,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Initialize Database
-const dbPath = path.join(__dirname, 'database.sqlite');
+const dbPath = path.join(DATA_DIR, 'database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('Error connecting to SQLite:', err.message);
     else console.log('Connected to SQLite database.');
@@ -235,5 +238,5 @@ app.put('/api/user/:mobile', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:3000/api/users`);
+    console.log(`Server running on port ${PORT}`);
 });
