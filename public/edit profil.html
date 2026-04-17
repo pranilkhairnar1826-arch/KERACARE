@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile – Keracare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+html { scroll-behavior: smooth; }
+
+:root {
+  --brand-blue: #4589E0;
+  --brand-dark: #1e73d8;
+  --brand-light: #2bb3ff;
+  --teal: #0d9e8a;
+  --teal-light: #e0f7f4;
+  --teal-mid: #14b8a6;
+  --bg: #e9f3ff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: #1a1a2e;
+}
+
+/* ── NAVBAR ── */
+.navbar-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 60px;
+  background: white;
+  margin: 20px;
+  border-radius: 40px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 24px;
+  color: var(--brand-dark);
+  letter-spacing: -0.5px;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin: 0;
+}
+
+.nav-links li {
+  cursor: pointer;
+  font-size: 14px;
+  color: #444;
+  transition: color 0.2s;
+}
+
+.nav-links li:hover { color: var(--brand-blue); }
+.nav-links li.active { color: var(--brand-blue); font-weight: 600; }
+
+.nav-contact-link { color: #444; text-decoration: none; font-size: 14px; transition: color .2s; }
+.nav-contact-link:hover { color: var(--brand-blue); font-weight: 600; }
+
+.portal-btn {
+  background: white;
+  color: var(--brand-blue);
+  border: 2px solid var(--brand-blue);
+  padding: 9px 22px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 14px rgba(69,137,224,0.25);
+  letter-spacing: 0.3px;
+  transition: all 0.25s;
+}
+
+.portal-btn:hover { background: var(--brand-blue); color: white; }
+
+/* ── PAGE WRAP ── */
+.page-wrap {
+  padding: 10px 40px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 24px;
+  animation: fadeUp .5s ease forwards;
+}
+
+.breadcrumb a {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb i { font-size: 11px; color: #ccc; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: linear-gradient(135deg, #1e73d8 0%, #0d9e8a 100%);
+  border-radius: 24px;
+  padding: 32px 40px;
+  margin-bottom: 28px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp .5s ease forwards;
+}
+
+.page-header::before {
+  content: "";
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+}
+
+.page-header::after {
+  content: "";
+  position: absolute;
+  bottom: -70px; left: 30%;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+
+.ph-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.ph-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.ph-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: white; }
+.ph-sub { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+
+/* ── CARD ── */
+.edit-card {
+  background: white;
+  border-radius: 28px;
+  box-shadow: 0 10px 40px rgba(69,137,224,0.12);
+  overflow: hidden;
+  animation: fadeUp .5s .1s ease forwards;
+  opacity: 0;
+}
+
+/* ── AVATAR SECTION ── */
+.avatar-edit-section {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--brand-blue) 100%);
+  padding: 36px 40px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-edit-section::before {
+  content: "";
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+}
+
+.avatar-edit-wrap {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.avatar-edit-ring {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.5);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  overflow: hidden;
+  background: var(--teal-light);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.avatar-edit-ring img { width: 100%; height: 100%; object-fit: cover; }
+
+.avatar-initials-ep {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--teal);
+}
+
+.avatar-change-btn {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  color: var(--teal);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all .2s;
+}
+
+.avatar-change-btn:hover { background: var(--teal-light); transform: scale(1.1); }
+
+.avatar-info { z-index: 1; }
+.avatar-info h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: white; }
+.avatar-info p { font-size: 12px; color: rgba(255,255,255,0.72); margin-top: 3px; }
+
+.avatar-info .photo-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.avatar-info .photo-hint:hover { background: rgba(255,255,255,0.28); }
+
+/* ── FORM ── */
+.form-body { padding: 36px 40px; }
+
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #f0f4f8;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full-width { grid-column: 1 / -1; }
+
+.form-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  color: #1a1a2e;
+  background: #f8fbff;
+  outline: none;
+  transition: all .25s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--teal);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(13,158,138,0.08);
+}
+
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover { border-color: #c7d7f0; }
+
+.form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 36px; background-color: #f8fbff; }
+
+.form-textarea { resize: vertical; min-height: 90px; }
+
+.input-icon-wrap { position: relative; }
+.input-icon-wrap .form-input { padding-left: 42px; }
+.input-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--teal);
+  pointer-events: none;
+}
+
+.field-hint { font-size: 11px; color: #bbb; margin-top: 2px; }
+
+/* Blood group special */
+.blood-select-wrap { position: relative; }
+.blood-preview {
+  position: absolute;
+  right: 44px; top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* ── MEDICAL INFO ── */
+.allergy-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.allergy-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff1f2;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid #fecaca;
+}
+
+.allergy-tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  opacity: .7;
+  transition: opacity .2s;
+}
+
+.allergy-tag button:hover { opacity: 1; }
+
+.tag-input-wrap { display: flex; gap: 10px; margin-top: 10px; }
+
+.tag-input {
+  flex: 1;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  background: #f8fbff;
+  transition: border-color .2s;
+}
+
+.tag-input:focus { border-color: var(--teal); }
+
+.tag-add-btn {
+  padding: 10px 18px;
+  background: var(--teal-light);
+  color: var(--teal);
+  border: 1.5px solid #b2ede7;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+
+.tag-add-btn:hover { background: var(--teal); color: white; }
+
+/* ── DIVIDER ── */
+.form-divider { height: 1px; background: #f0f4f8; margin-bottom: 28px; }
+
+/* ── EMERGENCY CONTACT ── */
+.emergency-box {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 18px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+
+.emergency-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d97706;
+  margin-bottom: 16px;
+}
+
+/* ── ACTION BUTTONS ── */
+.form-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.btn-save {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all .3s;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  box-shadow: 0 6px 18px rgba(13,158,138,0.3);
+}
+
+.btn-save:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(13,158,138,0.4); }
+
+.btn-cancel {
+  padding: 14px 28px;
+  background: white;
+  color: #888;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all .3s;
+}
+
+.btn-cancel:hover { border-color: #dc2626; color: #dc2626; background: #fff5f5; }
+
+/* ── SUCCESS TOAST ── */
+.toast {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: white;
+  border-left: 4px solid var(--teal);
+  border-radius: 14px;
+  padding: 14px 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  z-index: 20000;
+  align-items: center;
+  gap: 12px;
+  min-width: 260px;
+  animation: toastIn .3s ease forwards;
+}
+
+.toast.show { display: flex; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.toast-icon { font-size: 22px; color: var(--teal); }
+.toast-text { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+.toast-sub { font-size: 11px; color: #aaa; margin-top: 1px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.fadeUp { animation: fadeUp .6s ease forwards; }
+
+/* ── FOOTER ── */
+.footer {
+  background: #0b0b0b;
+  color: white;
+  padding: 48px 80px;
+  margin: 20px;
+  border-radius: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; z-index: 1;
+  flex-wrap: wrap; gap: 20px;
+}
+
+.footer-logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 22px; color: #2bb3ff; }
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a { color: #ccc; font-size: 13px; text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: #2bb3ff; }
+.footer-bottom { text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid #333; color: #aaa; font-size: 12px; position: relative; z-index: 1; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .navbar-wrap { padding: 14px 20px; margin: 10px; }
+  .nav-links { display: none; }
+  .page-wrap { padding: 10px 16px 40px; }
+  .form-body { padding: 24px 20px; }
+  .avatar-edit-section { padding: 28px 20px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .footer { padding: 32px 24px; margin: 10px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar-wrap">
+  <a href="index.html" class="logo">Keracare</a>
+  <ul class="nav-links">
+    <li onclick="location.href='index.html'">Home</li>
+    <li onclick="location.href='about.html'">About</li>
+    <li onclick="location.href='services.html'">Services</li>
+    <li><a href="#contact" class="nav-contact-link">Contact</a></li>
+    <li onclick="location.href='dashboard.html'">Dashboard</li>
+  </ul>
+  <div id="google_translate_element" style="display:inline-block; margin-right: 15px; vertical-align: middle;"></div>
+<button class="portal-btn" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+</header>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="dashboard.html"><i class="bi bi-house-fill"></i> Dashboard</a>
+    <i class="bi bi-chevron-right"></i>
+    <span>Edit Profile</span>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="ph-inner">
+      <div class="ph-icon">✏️</div>
+      <div>
+        <div class="ph-title">Edit Profile</div>
+        <div class="ph-sub">Update your personal &amp; medical information</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Card -->
+  <div class="edit-card">
+
+    <!-- Avatar Section -->
+    <div class="avatar-edit-section">
+      <div class="avatar-edit-wrap">
+        <div class="avatar-edit-ring">
+          <img id="previewImg"
+            src="https://ui-avatars.com/api/?name=Rahul+Singh&background=e0f7f4&color=0d9e8a&size=100&bold=true&font-size=0.4"
+            alt="Rahul Singh"
+            onerror="this.style.display='none';document.getElementById('initials').style.display='flex';">
+          <span class="avatar-initials-ep" id="initials" style="display:none;">RS</span>
+        </div>
+        <button class="avatar-change-btn" title="Change photo" onclick="document.getElementById('photoInput').click()">
+          <i class="bi bi-camera-fill"></i>
+        </button>
+        <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
+      </div>
+      <div class="avatar-info">
+        <h3 id="headerName">Rahul Singh</h3>
+        <p>Patient ID: KRC-2024-00412</p>
+        <div class="photo-hint" onclick="document.getElementById('photoInput').click()">
+          <i class="bi bi-upload"></i> Change Profile Photo
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-body">
+
+      <!-- Personal Info -->
+      <div class="section-title"><i class="bi bi-person-fill" style="color:var(--teal)"></i> Personal Information</div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-person input-icon"></i>
+            <input type="text" class="form-input" id="firstName" value="Rahul" placeholder="First name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-person input-icon"></i>
+            <input type="text" class="form-input" id="lastName" value="Singh" placeholder="Last name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-calendar3 input-icon"></i>
+            <input type="date" class="form-input" id="dob" value="1996-03-14">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select class="form-select" id="gender">
+            <option value="">Select gender</option>
+            <option value="male" selected>Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="prefer_not">Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-telephone input-icon"></i>
+            <input type="tel" class="form-input" id="phone" value="+91 9000000000" placeholder="+91 XXXXXXXXXX">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-envelope input-icon"></i>
+            <input type="email" class="form-input" id="email" value="rahul.singh@email.com" placeholder="your@email.com">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label">Address</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-geo-alt input-icon"></i>
+            <input type="text" class="form-input" id="address" value="Kerala, India" placeholder="Your full address">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Medical Info -->
+      <div class="section-title"><i class="bi bi-heart-pulse-fill" style="color:#dc2626"></i> Medical Information</div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Blood Group</label>
+          <div class="blood-select-wrap">
+            <select class="form-select" id="bloodGroup" onchange="updateBloodPreview(this)">
+              <option value="">Select</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+" selected>B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+            <span class="blood-preview" id="bloodPreview">B+</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Height (cm)</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-arrows-expand input-icon"></i>
+            <input type="number" class="form-input" id="height" value="175" placeholder="e.g. 170">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Weight (kg)</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-speedometer2 input-icon"></i>
+            <input type="number" class="form-input" id="weight" value="72" placeholder="e.g. 65">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Primary Doctor</label>
+          <div class="input-icon-wrap">
+            <i class="bi bi-hospital input-icon"></i>
+            <input type="text" class="form-input" id="doctor" value="Dr. Priya Menon" placeholder="Doctor name">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label">Known Medical Conditions</label>
+          <textarea class="form-textarea" id="conditions" placeholder="e.g. Hypertension, Diabetes Type 2...">None</textarea>
+        </div>
+      </div>
+
+      <!-- Allergies -->
+      <div class="form-group" style="margin-bottom: 28px;">
+        <label class="form-label">Allergies</label>
+        <div class="allergy-tags" id="allergyTags">
+          <span class="allergy-tag">Penicillin <button onclick="removeTag(this)" title="Remove">×</button></span>
+          <span class="allergy-tag">Dust <button onclick="removeTag(this)" title="Remove">×</button></span>
+        </div>
+        <div class="tag-input-wrap">
+          <input type="text" class="tag-input" id="allergyInput" placeholder="Add allergy and press Enter or click Add">
+          <button class="tag-add-btn" onclick="addAllergy()"><i class="bi bi-plus-lg"></i> Add</button>
+        </div>
+        <div class="field-hint">Press Enter to add quickly</div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Emergency Contact -->
+      <div class="section-title"><i class="bi bi-telephone-plus-fill" style="color:#d97706"></i> Emergency Contact</div>
+
+      <div class="emergency-box">
+        <div class="emergency-title"><i class="bi bi-exclamation-triangle-fill"></i> Emergency Contact Details</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Contact Name</label>
+            <div class="input-icon-wrap">
+              <i class="bi bi-person input-icon"></i>
+              <input type="text" class="form-input" id="emergName" value="Sunita Singh" placeholder="Full name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Relationship</label>
+            <select class="form-select" id="emergRelation">
+              <option value="">Select</option>
+              <option value="parent" selected>Parent</option>
+              <option value="spouse">Spouse</option>
+              <option value="sibling">Sibling</option>
+              <option value="child">Child</option>
+              <option value="friend">Friend</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <div class="input-icon-wrap">
+              <i class="bi bi-telephone input-icon"></i>
+              <input type="tel" class="form-input" id="emergPhone" value="+91 9111111111" placeholder="+91 XXXXXXXXXX">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email (optional)</label>
+            <div class="input-icon-wrap">
+              <i class="bi bi-envelope input-icon"></i>
+              <input type="email" class="form-input" id="emergEmail" placeholder="contact@email.com">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button class="btn-save" onclick="saveProfile()">
+          <i class="bi bi-check-circle-fill"></i> Save Changes
+        </button>
+        <button class="btn-cancel" onclick="location.href='dashboard.html'">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon"><i class="bi bi-check-circle-fill"></i></div>
+  <div>
+    <div class="toast-text">Profile Updated!</div>
+    <div class="toast-sub">Your changes have been saved successfully.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" id="contact">
+  <div class="footer-inner">
+    <div class="footer-logo">Keracare</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Keracare Health Services. All rights reserved.</div>
+</footer>
+
+<script>
+  // Live preview name in avatar section header
+  function updateHeaderName() {
+    const first = document.getElementById('firstName').value;
+    const last = document.getElementById('lastName').value;
+    document.getElementById('headerName').textContent = (first + ' ' + last).trim() || 'Your Name';
+  }
+  document.getElementById('firstName').addEventListener('input', updateHeaderName);
+  document.getElementById('lastName').addEventListener('input', updateHeaderName);
+
+  // Blood group preview badge
+  function updateBloodPreview(sel) {
+    document.getElementById('bloodPreview').textContent = sel.value || '';
+  }
+
+  // Photo preview
+  function previewPhoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const img = document.getElementById('previewImg');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+      document.getElementById('initials').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Allergy tags
+  function addAllergy() {
+    const input = document.getElementById('allergyInput');
+    const val = input.value.trim();
+    if (!val) return;
+    const wrap = document.getElementById('allergyTags');
+    const tag = document.createElement('span');
+    tag.className = 'allergy-tag';
+    tag.innerHTML = `${val} <button onclick="removeTag(this)" title="Remove">×</button>`;
+    wrap.appendChild(tag);
+    input.value = '';
+    input.focus();
+  }
+
+  document.getElementById('allergyInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); addAllergy(); }
+  });
+
+  function removeTag(btn) {
+    btn.closest('.allergy-tag').remove();
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    const mobile = sessionStorage.getItem('kc_patient_mobile');
+    if (!mobile) {
+      location.href = 'patient login.html';
+      return;
+    }
+
+    fetch(`/api/user/${mobile}`)
+      .then(res => res.json())
+      .then(user => {
+        if (!user.error) {
+          document.getElementById('firstName').value = user.firstName || '';
+          document.getElementById('lastName').value = user.lastName || '';
+          document.getElementById('dob').value = user.dob || '';
+          document.getElementById('gender').value = user.gender || '';
+          document.getElementById('phone').value = user.phone || user.mobile || '';
+          document.getElementById('email').value = user.email || '';
+          document.getElementById('address').value = user.address || '';
+          document.getElementById('bloodGroup').value = user.bloodGroup || '';
+          document.getElementById('height').value = user.height || '175';
+          document.getElementById('weight').value = user.weight || '72';
+          document.getElementById('doctor').value = user.doctor || '';
+          document.getElementById('conditions').value = user.conditions || 'None';
+          
+          document.getElementById('emergName').value = user.emergencyName || '';
+          document.getElementById('emergRelation').value = user.emergencyRelation || '';
+          document.getElementById('emergPhone').value = user.emergencyPhone || '';
+          document.getElementById('emergEmail').value = user.emergencyEmail || '';
+
+          if (user.allergies) {
+             const wrap = document.getElementById('allergyTags');
+             wrap.innerHTML = '';
+             user.allergies.split(',').forEach(a => {
+               if(a.trim()) {
+                 const tag = document.createElement('span');
+                 tag.className = 'allergy-tag';
+                 tag.innerHTML = `${a.trim()} <button onclick="removeTag(this)" title="Remove">×</button>`;
+                 wrap.appendChild(tag);
+               }
+             });
+          }
+
+          updateHeaderName();
+          updateBloodPreview(document.getElementById('bloodGroup'));
+        }
+      });
+  });
+
+  // Save
+  function saveProfile() {
+    const mobileId = sessionStorage.getItem('kc_patient_mobile');
+    if (!mobileId) return;
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const dob = document.getElementById('dob').value;
+    const gender = document.getElementById('gender').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const address = document.getElementById('address').value;
+    const bloodGroup = document.getElementById('bloodGroup').value;
+    const height = document.getElementById('height').value;
+    const weight = document.getElementById('weight').value;
+    const doctor = document.getElementById('doctor').value;
+    const conditions = document.getElementById('conditions').value;
+    
+    const emergName = document.getElementById('emergName').value;
+    const emergRelation = document.getElementById('emergRelation').value;
+    const emergPhone = document.getElementById('emergPhone').value;
+    const emergEmail = document.getElementById('emergEmail').value;
+
+    const allergySpans = document.querySelectorAll('.allergy-tag');
+    let allergiesArr = [];
+    allergySpans.forEach(span => {
+      let text = span.textContent.replace('×', '').trim();
+      if(text) allergiesArr.push(text);
+    });
+    const allergies = allergiesArr.join(',');
+
+    const payload = {
+        firstName, lastName, dob, gender, bloodGroup, address, phone, email,
+        height, weight, doctor, conditions, allergies,
+        emergencyName: emergName, emergencyRelation: emergRelation, 
+        emergencyPhone: emergPhone, emergencyEmail: emergEmail
+    };
+
+    const btn = document.querySelector('.btn-save');
+    if (btn) btn.disabled = true;
+
+    fetch(`/api/user/${mobileId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (btn) btn.disabled = false;
+      const fullName = firstName + ' ' + lastName;
+      if (fullName.trim()) sessionStorage.setItem('kc_patient_name', fullName);
+      if (bloodGroup) sessionStorage.setItem('kc_patient_blood', bloodGroup);
+      if (dob) sessionStorage.setItem('kc_patient_dob', dob);
+
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3500);
+    }).catch(err => {
+      if (btn) btn.disabled = false;
+      alert('Error updating profile');
+    });
+  }
+</script>
+
+<!-- Google Translate Script -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+\n</body>
+</html>

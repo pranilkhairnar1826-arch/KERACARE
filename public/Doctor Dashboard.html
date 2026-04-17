@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doctor Dashboard – KERACARE</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+
+  <style>
+    :root {
+      /* Doctor palette — deeper slate/indigo-teal clinical tone */
+      --slate:        #0f1f35;
+      --slate-mid:    #1b3354;
+      --slate-light:  #254d7a;
+      --indigo:       #3d5a9e;
+      --teal:         #0ea5a0;
+      --teal-light:   #2dd4bf;
+      --teal-pale:    #e6faf8;
+      --cyan:         #06b6d4;
+      --green:        #059669;
+      --green-pale:   #ecfdf5;
+      --amber:        #d97706;
+      --amber-pale:   #fffbeb;
+      --red:          #dc2626;
+      --red-pale:     #fef2f2;
+      --orange:       #ea580c;
+      --orange-pale:  #fff7ed;
+      --purple:       #7c3aed;
+      --purple-pale:  #f5f3ff;
+      --ink:          #0c1821;
+      --body:         #1e3a52;
+      --muted:        #5c7a96;
+      --light:        #8baabb;
+      --surface:      #eef4f9;
+      --surface2:     #f7fafd;
+      --white:        #ffffff;
+      --border:       #d4e2ef;
+      --border-light: #e8f0f7;
+      --shadow-sm:    0 1px 3px rgba(15,31,53,.07),0 1px 2px rgba(15,31,53,.04);
+      --shadow-md:    0 4px 18px rgba(15,31,53,.10),0 2px 6px rgba(15,31,53,.05);
+      --shadow-lg:    0 12px 40px rgba(15,31,53,.14),0 4px 12px rgba(15,31,53,.08);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--surface);color:var(--body);min-height:100vh;overflow-x:hidden;}
+    h1,h2,h3,h4,h5{font-family:'Sora',sans-serif;}
+
+    /* ════════════ SIDEBAR ════════════ */
+    .app-shell{display:flex;min-height:100vh;}
+
+    .sidebar{
+      width:268px;flex-shrink:0;
+      background:var(--slate);
+      display:flex;flex-direction:column;
+      position:fixed;top:0;left:0;bottom:0;z-index:300;
+      transition:transform .28s cubic-bezier(.4,0,.2,1);
+    }
+    .sidebar-top{
+      padding:1.4rem 1.4rem 0;
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:1rem;
+    }
+    .kc-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:1rem;}
+    .logo-mark{
+      width:36px;height:36px;border-radius:9px;
+      background:linear-gradient(135deg,var(--teal),var(--teal-light));
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 12px rgba(14,165,160,.35);flex-shrink:0;
+    }
+    .logo-mark svg{width:18px;height:18px;fill:white;}
+    .logo-text{font-family:'Sora',sans-serif;font-weight:800;font-size:1.15rem;color:white;letter-spacing:-.3px;}
+    .logo-text span{color:var(--teal-light);}
+
+    /* Doctor profile pill */
+    .doc-pill{
+      background:rgba(14,165,160,.12);
+      border:1px solid rgba(14,165,160,.22);
+      border-radius:12px;padding:.8rem 1rem;
+      display:flex;align-items:center;gap:10px;
+    }
+    .doc-avatar{
+      width:40px;height:40px;border-radius:50%;
+      background:linear-gradient(135deg,var(--teal),var(--teal-light));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:.9rem;color:white;flex-shrink:0;
+    }
+    .doc-info{}
+    .doc-name{font-size:.83rem;font-weight:700;color:white;line-height:1.2;}
+    .doc-spec{font-size:.68rem;color:rgba(255,255,255,.45);margin-top:2px;}
+    .doc-verified{
+      display:inline-flex;align-items:center;gap:3px;
+      font-size:.62rem;font-weight:700;
+      color:var(--teal-light);margin-top:3px;
+    }
+
+    .sidebar-nav{flex:1;padding:.6rem 0;overflow-y:auto;}
+    .nav-section-label{
+      font-size:.63rem;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:rgba(255,255,255,.28);
+      padding:.8rem 1.5rem .3rem;
+    }
+    .nav-item{
+      display:flex;align-items:center;gap:11px;
+      padding:.6rem 1.25rem .6rem 1.5rem;
+      color:rgba(255,255,255,.5);font-size:.84rem;font-weight:500;
+      text-decoration:none;border:none;background:none;
+      width:100%;text-align:left;cursor:pointer;
+      transition:all .18s;position:relative;
+    }
+    .nav-item i{font-size:.98rem;width:20px;flex-shrink:0;}
+    .nav-item:hover{color:white;background:rgba(255,255,255,.06);}
+    .nav-item.active{
+      color:white;
+      background:linear-gradient(90deg,rgba(14,165,160,.22),rgba(14,165,160,.06));
+      border-left:3px solid var(--teal-light);
+      padding-left:calc(1.5rem - 3px);
+    }
+    .nav-item.active i{color:var(--teal-light);}
+    .nav-badge{
+      margin-left:auto;min-width:20px;height:20px;
+      font-size:.64rem;font-weight:700;
+      border-radius:10px;display:flex;align-items:center;
+      justify-content:center;padding:0 5px;
+    }
+    .nb-red{background:var(--red);color:white;}
+    .nb-teal{background:rgba(14,165,160,.25);color:var(--teal-light);}
+    .nb-amber{background:rgba(217,119,6,.25);color:#fbbf24;}
+
+    .sidebar-footer{
+      padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,.07);
+    }
+    .btn-logout{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      width:100%;padding:.55rem;border-radius:9px;
+      background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);
+      color:#f87171;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;
+    }
+    .btn-logout:hover{background:rgba(220,38,38,.2);}
+
+    /* ════════════ TOPBAR ════════════ */
+    .main-wrap{margin-left:268px;flex:1;display:flex;flex-direction:column;min-width:0;}
+    .topbar{
+      background:white;border-bottom:1px solid var(--border-light);
+      height:64px;display:flex;align-items:center;
+      padding:0 1.75rem;gap:1rem;
+      position:sticky;top:0;z-index:200;
+      box-shadow:var(--shadow-sm);
+    }
+    .topbar-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.25rem;padding:4px;}
+    .topbar-search{
+      flex:1;max-width:420px;position:relative;
+    }
+    .topbar-search input{
+      width:100%;height:38px;
+      padding:0 1rem 0 2.5rem;
+      font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;
+      border:1.5px solid var(--border);border-radius:10px;
+      background:var(--surface);color:var(--ink);outline:none;
+      transition:all .2s;
+    }
+    .topbar-search input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,165,160,.1);background:white;}
+    .topbar-search i{
+      position:absolute;left:10px;top:50%;transform:translateY(-50%);
+      color:var(--light);font-size:.9rem;pointer-events:none;
+    }
+    .topbar-search input:focus + i,.topbar-search:focus-within i{color:var(--teal);}
+    /* fix icon order in DOM */
+    .topbar-search .s-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--light);font-size:.9rem;pointer-events:none;}
+
+    .topbar-right{display:flex;align-items:center;gap:.75rem;margin-left:auto;}
+    .topbar-date{font-size:.78rem;color:var(--muted);white-space:nowrap;}
+    .tb-btn{
+      width:36px;height:36px;border-radius:9px;
+      border:1.5px solid var(--border);background:white;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--muted);font-size:1rem;cursor:pointer;
+      transition:all .2s;position:relative;
+    }
+    .tb-btn:hover{border-color:var(--teal);color:var(--teal);}
+    .tb-badge{
+      position:absolute;top:4px;right:4px;
+      width:8px;height:8px;border-radius:50%;
+      background:var(--red);border:1.5px solid white;
+    }
+    .doc-topbar-avatar{
+      width:36px;height:36px;border-radius:50%;
+      background:linear-gradient(135deg,var(--teal),var(--teal-light));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:.82rem;color:white;cursor:pointer;
+      box-shadow:0 2px 8px rgba(14,165,160,.3);
+    }
+
+    /* ════════════ CONTENT ════════════ */
+    .main-content{padding:1.6rem;flex:1;}
+
+    /* header row */
+    .dash-header{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;
+    }
+    .dash-greeting{font-size:.78rem;color:var(--muted);margin-bottom:.25rem;}
+    .dash-title{font-size:1.45rem;font-weight:800;color:var(--ink);letter-spacing:-.5px;line-height:1.2;}
+    .dash-sub{font-size:.82rem;color:var(--muted);margin-top:.3rem;}
+    .dash-header-actions{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;}
+    .btn-primary-kc{
+      display:flex;align-items:center;gap:7px;
+      padding:.55rem 1.1rem;
+      background:linear-gradient(135deg,var(--teal),var(--teal-light));
+      color:white;border:none;border-radius:9px;
+      font-size:.83rem;font-weight:700;cursor:pointer;
+      box-shadow:0 3px 12px rgba(14,165,160,.3);transition:all .2s;
+    }
+    .btn-primary-kc:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(14,165,160,.4);}
+    .btn-outline-kc{
+      display:flex;align-items:center;gap:7px;
+      padding:.55rem 1.1rem;
+      background:white;color:var(--body);
+      border:1.5px solid var(--border);border-radius:9px;
+      font-size:.83rem;font-weight:600;cursor:pointer;transition:all .2s;
+    }
+    .btn-outline-kc:hover{border-color:var(--teal);color:var(--teal);}
+
+    /* ── STAT GRID ── */
+    .stat-grid{
+      display:grid;grid-template-columns:repeat(5,1fr);
+      gap:1rem;margin-bottom:1.5rem;
+    }
+    .stat-card{
+      background:white;border:1px solid var(--border-light);
+      border-radius:14px;padding:1.15rem 1.15rem .9rem;
+      box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+    .stat-card::after{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    }
+    .sc-teal::after  {background:linear-gradient(90deg,var(--teal),var(--teal-light));}
+    .sc-green::after {background:linear-gradient(90deg,var(--green),#34d399);}
+    .sc-amber::after {background:linear-gradient(90deg,var(--amber),#fbbf24);}
+    .sc-red::after   {background:linear-gradient(90deg,var(--red),#f87171);}
+    .sc-purple::after{background:linear-gradient(90deg,var(--purple),#a78bfa);}
+
+    .stat-icon{
+      width:38px;height:38px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1rem;margin-bottom:.8rem;
+    }
+    .si-teal  {background:var(--teal-pale);color:var(--teal);}
+    .si-green {background:var(--green-pale);color:var(--green);}
+    .si-amber {background:var(--amber-pale);color:var(--amber);}
+    .si-red   {background:var(--red-pale);color:var(--red);}
+    .si-purple{background:var(--purple-pale);color:var(--purple);}
+    .si-orange{background:var(--orange-pale);color:var(--orange);}
+
+    .stat-val{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);line-height:1;}
+    .stat-label{font-size:.73rem;color:var(--muted);margin-top:.2rem;}
+    .stat-trend{font-size:.7rem;font-weight:600;margin-top:.4rem;display:flex;align-items:center;gap:3px;}
+    .tr-up{color:var(--green);}
+    .tr-dn{color:var(--red);}
+    .tr-neu{color:var(--muted);}
+
+    /* ── LAYOUT GRID ── */
+    .content-grid{
+      display:grid;grid-template-columns:1fr 320px;gap:1.25rem;
+    }
+
+    /* ── CARD BASE ── */
+    .card-kc{
+      background:white;border:1px solid var(--border-light);
+      border-radius:14px;box-shadow:var(--shadow-sm);
+      overflow:hidden;margin-bottom:1.25rem;
+    }
+    .card-header-kc{
+      padding:1rem 1.35rem;border-bottom:1px solid var(--border-light);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .ch-left{display:flex;align-items:center;gap:10px;}
+    .ch-icon{
+      width:32px;height:32px;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;font-size:.9rem;
+    }
+    .card-title{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:700;color:var(--ink);}
+    .card-sub{font-size:.7rem;color:var(--muted);margin-top:2px;}
+    .card-action{
+      font-size:.74rem;font-weight:600;color:var(--teal);
+      background:none;border:none;cursor:pointer;padding:0;
+      display:flex;align-items:center;gap:4px;transition:color .2s;text-decoration:none;
+    }
+    .card-action:hover{color:var(--slate-mid);}
+
+    /* ── PATIENT SEARCH PANEL ── */
+    .search-panel{padding:1.25rem;}
+    .search-input-wrap{position:relative;margin-bottom:.75rem;}
+    .search-input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--light);font-size:.9rem;}
+    .search-big{
+      width:100%;height:46px;padding:0 1rem 0 2.6rem;
+      font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;
+      border:1.5px solid var(--border);border-radius:11px;
+      background:var(--surface);color:var(--ink);outline:none;transition:all .2s;
+    }
+    .search-big:focus{border-color:var(--teal);background:white;box-shadow:0 0 0 3px rgba(14,165,160,.1);}
+    .search-big::placeholder{color:var(--light);}
+    .search-filters{display:flex;gap:.5rem;flex-wrap:wrap;}
+    .sf-pill{
+      padding:.3rem .75rem;border-radius:20px;font-size:.73rem;font-weight:600;
+      border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);
+      cursor:pointer;transition:all .18s;
+    }
+    .sf-pill.active{border-color:var(--teal);background:var(--teal-pale);color:var(--teal);}
+    .sf-pill:hover:not(.active){border-color:var(--teal);color:var(--teal);}
+
+    /* ── PATIENT TABLE ── */
+    .patient-table-wrap{overflow-x:auto;}
+    .patient-table{width:100%;border-collapse:collapse;}
+    .patient-table th{
+      font-size:.7rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:.06em;color:var(--muted);
+      padding:.7rem 1.2rem;border-bottom:1px solid var(--border-light);
+      background:var(--surface2);text-align:left;white-space:nowrap;
+    }
+    .patient-table th:first-child{border-radius:0;}
+    .patient-table td{
+      padding:.85rem 1.2rem;border-bottom:1px solid var(--border-light);
+      font-size:.83rem;color:var(--body);vertical-align:middle;
+    }
+    .patient-table tr:last-child td{border-bottom:none;}
+    .patient-table tr:hover td{background:#f7fbff;cursor:pointer;}
+
+    .pt-avatar{
+      width:34px;height:34px;border-radius:50%;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:.78rem;color:white;flex-shrink:0;
+    }
+    .pt-name{font-weight:600;color:var(--ink);}
+    .pt-id{font-size:.7rem;color:var(--muted);font-family:monospace;margin-top:2px;}
+
+    .status-pill{
+      display:inline-flex;align-items:center;gap:4px;
+      font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:20px;
+    }
+    .sp-active   {background:var(--green-pale);color:var(--green);}
+    .sp-critical {background:var(--red-pale);color:var(--red);}
+    .sp-monitor  {background:var(--amber-pale);color:var(--amber);}
+    .sp-stable   {background:var(--teal-pale);color:var(--teal);}
+    .sp-new      {background:var(--purple-pale);color:var(--purple);}
+
+    .pt-actions{display:flex;gap:.4rem;}
+    .pt-btn{
+      display:flex;align-items:center;gap:4px;
+      padding:.28rem .65rem;border-radius:7px;
+      font-size:.72rem;font-weight:600;cursor:pointer;
+      transition:all .18s;border:1.5px solid;
+    }
+    .pt-btn-view{
+      border-color:var(--border);background:var(--surface2);color:var(--muted);
+    }
+    .pt-btn-view:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-pale);}
+    .pt-btn-note{
+      border-color:var(--border);background:var(--surface2);color:var(--muted);
+    }
+    .pt-btn-note:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-pale);}
+    .pt-btn-alert{
+      border-color:var(--red-pale);background:var(--red-pale);color:var(--red);
+    }
+    .pt-btn-alert:hover{background:#fecaca;}
+
+    /* ── PATIENT DETAIL PANEL ── */
+    .patient-detail-panel{
+      position:fixed;top:0;right:0;bottom:0;
+      width:460px;background:white;
+      border-left:1px solid var(--border);
+      z-index:400;
+      transform:translateX(100%);
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+      display:flex;flex-direction:column;
+      box-shadow:var(--shadow-lg);
+    }
+    .patient-detail-panel.open{transform:translateX(0);}
+
+    .pdp-header{
+      background:linear-gradient(135deg,var(--slate),var(--slate-mid));
+      padding:1.4rem;position:relative;overflow:hidden;
+    }
+    .pdp-header::before{
+      content:'';position:absolute;inset:0;
+      background-image:linear-gradient(rgba(14,165,160,.07) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(14,165,160,.07) 1px,transparent 1px);
+      background-size:20px 20px;
+    }
+    .pdp-close{
+      position:absolute;top:1rem;right:1rem;
+      width:30px;height:30px;border-radius:8px;
+      background:rgba(255,255,255,.1);border:none;
+      color:rgba(255,255,255,.7);cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.95rem;transition:all .2s;z-index:2;
+    }
+    .pdp-close:hover{background:rgba(255,255,255,.2);color:white;}
+    .pdp-patient-info{position:relative;z-index:2;display:flex;align-items:flex-start;gap:12px;}
+    .pdp-avatar{
+      width:52px;height:52px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:1.1rem;color:white;flex-shrink:0;
+    }
+    .pdp-name{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:800;color:white;}
+    .pdp-id{font-family:monospace;font-size:.72rem;color:rgba(255,255,255,.5);margin-top:3px;}
+    .pdp-meta{display:flex;gap:1rem;margin-top:.7rem;flex-wrap:wrap;}
+    .pdp-meta-item{
+      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+      border-radius:8px;padding:.35rem .7rem;
+    }
+    .pdp-meta-label{font-size:.6rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;}
+    .pdp-meta-val  {font-size:.8rem;font-weight:700;color:white;margin-top:1px;}
+
+    .pdp-body{flex:1;overflow-y:auto;padding:1.25rem;}
+    .pdp-section{margin-bottom:1.5rem;}
+    .pdp-section-title{
+      font-size:.7rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:.08em;color:var(--muted);
+      margin-bottom:.75rem;display:flex;align-items:center;gap:6px;
+    }
+    .pdp-section-title::after{
+      content:'';flex:1;height:1px;background:var(--border-light);
+    }
+
+    .record-chip{
+      display:flex;align-items:center;gap:10px;
+      padding:.65rem .85rem;border-radius:10px;
+      border:1px solid var(--border-light);background:var(--surface2);
+      margin-bottom:.5rem;cursor:pointer;transition:all .18s;
+    }
+    .record-chip:hover{border-color:var(--teal);background:var(--teal-pale);}
+    .rc-icon{
+      width:34px;height:34px;border-radius:9px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.9rem;flex-shrink:0;
+    }
+    .rc-name{font-size:.82rem;font-weight:600;color:var(--ink);}
+    .rc-date{font-size:.7rem;color:var(--muted);margin-top:1px;}
+    .rc-badge{
+      margin-left:auto;font-size:.67rem;font-weight:700;
+      padding:2px 8px;border-radius:20px;flex-shrink:0;
+    }
+
+    /* notes textarea */
+    .note-area{
+      width:100%;padding:.75rem;
+      font-family:'Plus Jakarta Sans',sans-serif;font-size:.83rem;
+      border:1.5px solid var(--border);border-radius:10px;
+      background:var(--surface);color:var(--ink);outline:none;
+      resize:vertical;min-height:90px;transition:all .2s;
+    }
+    .note-area:focus{border-color:var(--teal);background:white;box-shadow:0 0 0 3px rgba(14,165,160,.1);}
+    .note-area::placeholder{color:var(--light);}
+
+    .pdp-footer{
+      padding:1rem 1.25rem;border-top:1px solid var(--border-light);
+      display:flex;gap:.6rem;
+    }
+
+    /* overlay */
+    .panel-overlay{
+      display:none;position:fixed;inset:0;
+      background:rgba(15,31,53,.5);z-index:399;
+      backdrop-filter:blur(2px);
+    }
+    .panel-overlay.show{display:block;}
+
+    /* ── TODAY'S SCHEDULE ── */
+    .schedule-list{padding:.25rem 0;}
+    .schedule-slot{
+      display:flex;align-items:stretch;gap:0;
+      padding:.65rem 1.35rem;border-bottom:1px solid var(--border-light);
+      cursor:pointer;transition:background .15s;
+    }
+    .schedule-slot:last-child{border-bottom:none;}
+    .schedule-slot:hover{background:var(--surface2);}
+    .slot-time{
+      min-width:60px;font-size:.72rem;font-weight:700;color:var(--muted);
+      padding-top:3px;flex-shrink:0;
+    }
+    .slot-bar{
+      width:3px;border-radius:2px;margin:0 12px;flex-shrink:0;
+    }
+    .slot-content{flex:1;}
+    .slot-patient{font-size:.84rem;font-weight:600;color:var(--ink);}
+    .slot-type{font-size:.72rem;color:var(--muted);margin-top:2px;}
+    .slot-badge{
+      font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:20px;
+      margin-left:auto;flex-shrink:0;align-self:flex-start;
+    }
+    .sb-done    {background:#f1f5f9;color:var(--muted);}
+    .sb-now     {background:var(--green-pale);color:var(--green);}
+    .sb-next    {background:var(--teal-pale);color:var(--teal);}
+    .sb-pending {background:var(--amber-pale);color:var(--amber);}
+
+    /* ── ALERTS / FLAGS ── */
+    .alert-item{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:.75rem 1.25rem;border-bottom:1px solid var(--border-light);
+    }
+    .alert-item:last-child{border-bottom:none;}
+    .alert-dot{
+      width:8px;height:8px;border-radius:50%;
+      flex-shrink:0;margin-top:5px;
+    }
+    .ai-text{font-size:.81rem;color:var(--body);line-height:1.5;}
+    .ai-time{font-size:.69rem;color:var(--light);margin-top:3px;}
+    .ai-badge{
+      margin-left:auto;flex-shrink:0;
+      font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:20px;
+    }
+
+    /* ── QUICK STATS ROW ── */
+    .mini-chart-row{
+      display:flex;gap:.5rem;padding:.5rem 1.1rem 1rem;
+      overflow-x:auto;
+    }
+    .mini-chart-item{
+      flex:1;min-width:90px;background:var(--surface2);
+      border:1px solid var(--border-light);border-radius:10px;
+      padding:.7rem .8rem;text-align:center;
+    }
+    .mci-val{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:800;color:var(--ink);}
+    .mci-label{font-size:.68rem;color:var(--muted);margin-top:2px;}
+
+    /* ── PRESCRIPTION QUICK FORM ── */
+    .rx-form{padding:1.1rem;}
+    .rx-label{font-size:.77rem;font-weight:600;color:var(--body);margin-bottom:.35rem;display:block;}
+    .rx-input{
+      width:100%;height:38px;padding:0 .85rem;
+      font-family:'Plus Jakarta Sans',sans-serif;font-size:.83rem;
+      border:1.5px solid var(--border);border-radius:8px;
+      background:var(--surface);color:var(--ink);outline:none;
+      transition:all .2s;margin-bottom:.7rem;
+    }
+    .rx-input:focus{border-color:var(--teal);background:white;box-shadow:0 0 0 3px rgba(14,165,160,.1);}
+    .rx-input::placeholder{color:var(--light);}
+    select.rx-input{cursor:pointer;}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1400px){.stat-grid{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:1199px){.content-grid{grid-template-columns:1fr;}.stat-grid{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:900px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .main-wrap{margin-left:0;}
+      .topbar-toggle{display:flex;}
+      .patient-detail-panel{width:100%;}
+    }
+    @media(max-width:700px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    .fu{animation:fadeUp .4s ease both;}
+    .fu1{animation:fadeUp .4s .07s ease both;}
+    .fu2{animation:fadeUp .4s .14s ease both;}
+    .fu3{animation:fadeUp .4s .21s ease both;}
+    .fu4{animation:fadeUp .4s .28s ease both;}
+
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:299;}
+    .sidebar-overlay.show{display:block;}
+
+    /* tag for urgent */
+    .urgent-tag{
+      display:inline-flex;align-items:center;gap:4px;
+      font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:20px;
+      background:var(--red-pale);color:var(--red);
+    }
+    .urgent-pulse{
+      width:6px;height:6px;border-radius:50%;background:var(--red);
+      animation:pulse-anim 1.5s infinite;display:inline-block;
+    }
+    @keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ════════════ SIDEBAR ════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="index.html" class="kc-logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2C9.24 2 7 4.24 7 7v1H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2h-2V7c0-2.76-2.24-5-5-5zm0 2c1.66 0 3 1.34 3 3v1H9V7c0-1.66 1.34-3 3-3zm1 9v2h2v2h-2v2h-2v-2H9v-2h2v-2h2z"/></svg>
+        </div>
+        <span class="logo-text">KERA<span>CARE</span></span>
+      </a>
+      <div class="doc-pill">
+        <div class="doc-avatar">PM</div>
+        <div class="doc-info">
+          <div class="doc-name">Dr. Priya Menon</div>
+          <div class="doc-spec">General Physician · Sunrise Medical</div>
+          <div class="doc-verified"><i class="bi bi-patch-check-fill"></i> KMC-REG-094571</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Clinic</div>
+      <button class="nav-item active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</button>
+      <button class="nav-item"><i class="bi bi-people-fill"></i> My Patients <span class="nav-badge nb-teal">24</span></button>
+      <button class="nav-item"><i class="bi bi-calendar2-check-fill"></i> Appointments <span class="nav-badge nb-amber">5</span></button>
+      <button class="nav-item" onclick="openQrScanner()"><i class="bi bi-qr-code-scan"></i> Scan Patient QR</button>
+
+      <div class="nav-section-label">Records</div>
+      <button class="nav-item"><i class="bi bi-file-medical-fill"></i> Patient Records <span class="nav-badge nb-red">3</span></button>
+      <button class="nav-item"><i class="bi bi-prescription2"></i> Prescriptions</button>
+      <button class="nav-item"><i class="bi bi-graph-up"></i> Lab Results</button>
+      <button class="nav-item"><i class="bi bi-exclamation-triangle-fill"></i> Flagged Cases <span class="nav-badge nb-red">2</span></button>
+
+      <div class="nav-section-label">Tools</div>
+      <button class="nav-item"><i class="bi bi-search"></i> Patient Search</button>
+      <button class="nav-item"><i class="bi bi-capsule-pill"></i> Drug Reference</button>
+      <button class="nav-item"><i class="bi bi-shield-plus"></i> Vaccination Log</button>
+
+      <div class="nav-section-label">Account</div>
+      <button class="nav-item"><i class="bi bi-person-fill"></i> My Profile</button>
+      <button class="nav-item"><i class="bi bi-gear-fill"></i> Settings</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="window.location.href='login.html'">
+        <i class="bi bi-box-arrow-left"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ════════════ MAIN WRAP ════════════ -->
+  <div class="main-wrap">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+      <div class="topbar-search">
+        <i class="bi bi-search s-icon"></i>
+        <input type="text" placeholder="Search patient by name or ID…" id="globalSearch" oninput="liveSearch(this.value)"/>
+      </div>
+      <div class="topbar-right">\n  <div id="google_translate_element" style="display:inline-block; margin-right: 15px; vertical-align: middle;"></div>
+        <span class="topbar-date" id="topbarDate"></span>
+        <button class="tb-btn" title="QR Scanner" onclick="openQrScanner()"><i class="bi bi-qr-code-scan"></i></button>
+        <button class="tb-btn" title="Alerts">
+          <i class="bi bi-bell"></i><span class="tb-badge"></span>
+        </button>
+        <button class="tb-btn" title="Messages">
+          <i class="bi bi-chat-dots-fill"></i>
+        </button>
+        <div class="doc-topbar-avatar">PM</div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- Header row -->
+      <div class="dash-header fu">
+        <div>
+          <div class="dash-greeting" id="docGreeting">Good morning, Doctor</div>
+          <div class="dash-title">Clinical Dashboard</div>
+          <div class="dash-sub">Sunrise Medical · Thrissur · 24 active patients today</div>
+        </div>
+        <div class="dash-header-actions">
+          <button class="btn-outline-kc" onclick="openQrScanner()"><i class="bi bi-qr-code-scan"></i> Scan QR</button>
+          <button class="btn-primary-kc" onclick="openNewPatient()"><i class="bi bi-person-plus-fill"></i> Add Patient</button>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="stat-grid fu1">
+        <div class="stat-card sc-teal">
+          <div class="stat-icon si-teal"><i class="bi bi-people-fill"></i></div>
+          <div class="stat-val">24</div>
+          <div class="stat-label">Patients Today</div>
+          <div class="stat-trend tr-up"><i class="bi bi-arrow-up-short"></i> 4 more than avg</div>
+        </div>
+        <div class="stat-card sc-green">
+          <div class="stat-icon si-green"><i class="bi bi-calendar2-check-fill"></i></div>
+          <div class="stat-val">8</div>
+          <div class="stat-label">Appointments Left</div>
+          <div class="stat-trend tr-neu"><i class="bi bi-dot"></i> Next at 11:30 AM</div>
+        </div>
+        <div class="stat-card sc-red">
+          <div class="stat-icon si-red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <div class="stat-val">2</div>
+          <div class="stat-label">Critical Flags</div>
+          <div class="stat-trend tr-dn"><i class="bi bi-exclamation-circle"></i> Needs attention</div>
+        </div>
+        <div class="stat-card sc-amber">
+          <div class="stat-icon si-amber"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+          <div class="stat-val">6</div>
+          <div class="stat-label">Pending Reports</div>
+          <div class="stat-trend tr-neu"><i class="bi bi-dot"></i> 2 labs overdue</div>
+        </div>
+        <div class="stat-card sc-purple">
+          <div class="stat-icon si-purple"><i class="bi bi-prescription2"></i></div>
+          <div class="stat-val">11</div>
+          <div class="stat-label">Prescriptions Today</div>
+          <div class="stat-trend tr-up"><i class="bi bi-arrow-up-short"></i> Issued this session</div>
+        </div>
+      </div>
+
+      <!-- CONTENT GRID -->
+      <div class="content-grid">
+
+        <!-- ── LEFT COLUMN ── -->
+        <div>
+
+          <!-- Patient List / Search -->
+          <div class="card-kc fu2">
+            <div class="card-header-kc">
+              <div class="ch-left">
+                <div class="ch-icon si-teal"><i class="bi bi-people-fill"></i></div>
+                <div>
+                  <div class="card-title">Patient Records</div>
+                  <div class="card-sub">Click a row to view full health profile</div>
+                </div>
+              </div>
+              <a class="card-action" href="#">Export <i class="bi bi-download"></i></a>
+            </div>
+
+            <div class="search-panel">
+              <div class="search-input-wrap">
+                <i class="bi bi-search"></i>
+                <input class="search-big" type="text" placeholder="Search by name, Patient ID, blood group, district…" id="tableSearch" oninput="filterTable(this.value)"/>
+              </div>
+              <div class="search-filters">
+                <div class="sf-pill active" onclick="setFilter('All',this)">All</div>
+                <div class="sf-pill" onclick="setFilter('Critical',this)">Critical</div>
+                <div class="sf-pill" onclick="setFilter('Monitor',this)">Monitor</div>
+                <div class="sf-pill" onclick="setFilter('Stable',this)">Stable</div>
+                <div class="sf-pill" onclick="setFilter('New',this)">New</div>
+              </div>
+            </div>
+
+            <div class="patient-table-wrap">
+              <table class="patient-table" id="patientTable">
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Blood</th>
+                    <th>District</th>
+                    <th>Last Visit</th>
+                    <th>Condition</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patientTbody">
+                  <!-- Rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="padding:.75rem 1.2rem;border-top:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.75rem;color:var(--muted);" id="tableCount">Showing 8 patients</span>
+              <div style="display:flex;gap:.4rem;">
+                <button style="padding:.3rem .7rem;border:1.5px solid var(--border);border-radius:7px;background:var(--surface2);font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;">← Prev</button>
+                <button style="padding:.3rem .7rem;border:1.5px solid var(--teal);border-radius:7px;background:var(--teal-pale);font-size:.75rem;font-weight:600;color:var(--teal);cursor:pointer;">1</button>
+                <button style="padding:.3rem .7rem;border:1.5px solid var(--border);border-radius:7px;background:var(--surface2);font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;">2</button>
+                <button style="padding:.3rem .7rem;border:1.5px solid var(--border);border-radius:7px;background:var(--surface2);font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;">Next →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Prescription Form -->
+          <div class="card-kc fu3">
+            <div class="card-header-kc">
+              <div class="ch-left">
+                <div class="ch-icon si-green"><i class="bi bi-prescription2"></i></div>
+                <div>
+                  <div class="card-title">Issue Prescription</div>
+                  <div class="card-sub">Write and attach prescription to patient record</div>
+                </div>
+              </div>
+            </div>
+            <div class="rx-form">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <label class="rx-label">Patient ID / Name</label>
+                  <input class="rx-input" type="text" placeholder="KL-MWK-XXXXX or Patient Name"/>
+                </div>
+                <div class="col-md-6">
+                  <label class="rx-label">Diagnosis</label>
+                  <input class="rx-input" type="text" placeholder="e.g. Type 2 Diabetes, Hypertension"/>
+                </div>
+                <div class="col-md-4">
+                  <label class="rx-label">Medication</label>
+                  <input class="rx-input" type="text" placeholder="Drug name"/>
+                </div>
+                <div class="col-md-3">
+                  <label class="rx-label">Dosage</label>
+                  <input class="rx-input" type="text" placeholder="e.g. 500mg"/>
+                </div>
+                <div class="col-md-3">
+                  <label class="rx-label">Frequency</label>
+                  <select class="rx-input">
+                    <option>Once daily</option>
+                    <option>Twice daily</option>
+                    <option>Thrice daily</option>
+                    <option>Weekly</option>
+                    <option>As needed</option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <label class="rx-label">Duration</label>
+                  <input class="rx-input" type="text" placeholder="e.g. 7 days"/>
+                </div>
+                <div class="col-12">
+                  <label class="rx-label">Doctor's Notes</label>
+                  <textarea class="note-area" rows="2" placeholder="Additional instructions, follow-up notes, warnings…"></textarea>
+                </div>
+                <div class="col-12" style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:.25rem;">
+                  <button class="btn-outline-kc">Clear</button>
+                  <button class="btn-primary-kc"><i class="bi bi-send-fill"></i> Issue & Attach to Record</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /left col -->
+
+        <!-- ── RIGHT COLUMN ── -->
+        <div>
+
+          <!-- Today's Schedule -->
+          <div class="card-kc fu1">
+            <div class="card-header-kc">
+              <div class="ch-left">
+                <div class="ch-icon si-teal"><i class="bi bi-calendar2-check-fill"></i></div>
+                <div>
+                  <div class="card-title">Today's Schedule</div>
+                  <div class="card-sub" id="scheduleDate"></div>
+                </div>
+              </div>
+              <button class="card-action">Full View</button>
+            </div>
+            <div class="mini-chart-row">
+              <div class="mini-chart-item">
+                <div class="mci-val">16</div><div class="mci-label">Seen</div>
+              </div>
+              <div class="mini-chart-item">
+                <div class="mci-val" style="color:var(--teal);">8</div><div class="mci-label">Remaining</div>
+              </div>
+              <div class="mini-chart-item">
+                <div class="mci-val" style="color:var(--amber);">3</div><div class="mci-label">Walk-in</div>
+              </div>
+              <div class="mini-chart-item">
+                <div class="mci-val" style="color:var(--red);">1</div><div class="mci-label">Urgent</div>
+              </div>
+            </div>
+            <div class="schedule-list">
+              <div class="schedule-slot">
+                <span class="slot-time">9:00 AM</span>
+                <div class="slot-bar" style="background:var(--muted);opacity:.3;"></div>
+                <div class="slot-content">
+                  <div class="slot-patient">Rajan K. Pillai</div>
+                  <div class="slot-type">General Checkup</div>
+                </div>
+                <span class="slot-badge sb-done">Done</span>
+              </div>
+              <div class="schedule-slot">
+                <span class="slot-time">10:00 AM</span>
+                <div class="slot-bar" style="background:var(--muted);opacity:.3;"></div>
+                <div class="slot-content">
+                  <div class="slot-patient">Fatima Begum</div>
+                  <div class="slot-type">Diabetes Follow-up</div>
+                </div>
+                <span class="slot-badge sb-done">Done</span>
+              </div>
+              <div class="schedule-slot" style="background:#f0fdf4;">
+                <span class="slot-time" style="color:var(--green);font-weight:800;">11:30 AM</span>
+                <div class="slot-bar" style="background:var(--green);"></div>
+                <div class="slot-content">
+                  <div class="slot-patient" style="color:var(--green);">Murugan S.</div>
+                  <div class="slot-type">Hypertension Review</div>
+                </div>
+                <span class="slot-badge sb-now">Now</span>
+              </div>
+              <div class="schedule-slot">
+                <span class="slot-time">12:30 PM</span>
+                <div class="slot-bar" style="background:var(--teal);opacity:.5;"></div>
+                <div class="slot-content">
+                  <div class="slot-patient">Sanjay Yadav</div>
+                  <div class="slot-type">Post-surgery follow-up</div>
+                </div>
+                <span class="slot-badge sb-next">Next</span>
+              </div>
+              <div class="schedule-slot">
+                <span class="slot-time">2:00 PM</span>
+                <div class="slot-bar" style="background:var(--border);"></div>
+                <div class="slot-content">
+                  <div class="slot-patient">Anwar Hussain</div>
+                  <div class="slot-type">Respiratory Complaint</div>
+                </div>
+                <span class="slot-badge sb-pending">Pending</span>
+              </div>
+              <div class="schedule-slot">
+                <span class="slot-time">3:00 PM</span>
+                <div class="slot-bar" style="background:var(--border);"></div>
+                <div class="slot-content">
+                  <div class="slot-patient">Kamala Devi</div>
+                  <div class="slot-type">Vaccination + Checkup</div>
+                </div>
+                <span class="slot-badge sb-pending">Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Critical Alerts -->
+          <div class="card-kc fu2">
+            <div class="card-header-kc">
+              <div class="ch-left">
+                <div class="ch-icon si-red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                <div>
+                  <div class="card-title">Critical Alerts</div>
+                  <div class="card-sub">Flagged patients needing attention</div>
+                </div>
+              </div>
+              <span class="urgent-tag"><span class="urgent-pulse"></span> 2 urgent</span>
+            </div>
+            <div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--red);"></div>
+                <div style="flex:1;">
+                  <div class="ai-text"><strong>Fatima Begum</strong> — Fasting glucose 290 mg/dL (severely elevated). Immediate medication review needed.</div>
+                  <div class="ai-time">Flagged 35 min ago · KL-MLP-24003812B</div>
+                </div>
+                <span class="ai-badge" style="background:var(--red-pale);color:var(--red);">Critical</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--red);"></div>
+                <div style="flex:1;">
+                  <div class="ai-text"><strong>Sanjay Yadav</strong> — Post-operative wound site showing signs of infection. Antibiotic adjustment required.</div>
+                  <div class="ai-time">Flagged 2 hrs ago · KL-TSR-24001209C</div>
+                </div>
+                <span class="ai-badge" style="background:var(--red-pale);color:var(--red);">Critical</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--amber);"></div>
+                <div style="flex:1;">
+                  <div class="ai-text"><strong>Murugan S.</strong> — BP 158/98 on last reading. Review current anti-hypertensive dosage.</div>
+                  <div class="ai-time">Flagged today morning · KL-EKM-24005501A</div>
+                </div>
+                <span class="ai-badge" style="background:var(--amber-pale);color:var(--amber);">Monitor</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--amber);"></div>
+                <div style="flex:1;">
+                  <div class="ai-text"><strong>Kamala Devi</strong> — Influenza vaccination overdue by 6 weeks. Schedule today.</div>
+                  <div class="ai-time">Flagged yesterday · KL-KZD-24007320D</div>
+                </div>
+                <span class="ai-badge" style="background:var(--amber-pale);color:var(--amber);">Reminder</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lab Results Pending -->
+          <div class="card-kc fu3">
+            <div class="card-header-kc">
+              <div class="ch-left">
+                <div class="ch-icon si-orange" style="background:var(--orange-pale);color:var(--orange);"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+                <div>
+                  <div class="card-title">Pending Lab Results</div>
+                  <div class="card-sub">Awaiting results from labs</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="record-chip" style="margin:.6rem .85rem .35rem;">
+                <div class="rc-icon" style="background:var(--teal-pale);color:var(--teal);"><i class="bi bi-droplet-half"></i></div>
+                <div>
+                  <div class="rc-name">HbA1c — Fatima Begum</div>
+                  <div class="rc-date">Ordered 13 Jul · Lakeshore Labs</div>
+                </div>
+                <span class="rc-badge" style="background:var(--red-pale);color:var(--red);">Overdue</span>
+              </div>
+              <div class="record-chip" style="margin:0 .85rem .35rem;">
+                <div class="rc-icon" style="background:var(--purple-pale);color:var(--purple);"><i class="bi bi-lungs"></i></div>
+                <div>
+                  <div class="rc-name">Chest CT — Anwar Hussain</div>
+                  <div class="rc-date">Ordered 14 Jul · District Imaging</div>
+                </div>
+                <span class="rc-badge" style="background:var(--amber-pale);color:var(--amber);">Pending</span>
+              </div>
+              <div class="record-chip" style="margin:0 .85rem .85rem;">
+                <div class="rc-icon" style="background:var(--green-pale);color:var(--green);"><i class="bi bi-activity"></i></div>
+                <div>
+                  <div class="rc-name">Lipid Profile — Murugan S.</div>
+                  <div class="rc-date">Ordered 15 Jul · KSRTC Clinic</div>
+                </div>
+                <span class="rc-badge" style="background:var(--teal-pale);color:var(--teal);">Processing</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /right col -->
+      </div>
+    </div><!-- /main-content -->
+  </div><!-- /main-wrap -->
+</div><!-- /app-shell -->
+
+<!-- ════ PATIENT DETAIL PANEL ════ -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="patient-detail-panel" id="patientPanel">
+  <div class="pdp-header">
+    <button class="pdp-close" onclick="closePanel()"><i class="bi bi-x-lg"></i></button>
+    <div class="pdp-patient-info" id="pdpInfo">
+      <!-- populated by JS -->
+    </div>
+  </div>
+  <div class="pdp-body" id="pdpBody">
+    <!-- populated by JS -->
+  </div>
+  <div class="pdp-footer">
+    <button class="btn-primary-kc" style="flex:1;justify-content:center;"><i class="bi bi-prescription2"></i> Issue Prescription</button>
+    <button class="btn-outline-kc" style="flex:1;justify-content:center;"><i class="bi bi-flag-fill"></i> Flag Patient</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ══════════════════════════════════
+   KERACARE Doctor Dashboard JS
+══════════════════════════════════ */
+
+/* ── Patient data ── */
+const PATIENTS = [
+  {id:'KL-EKM-25001247A', name:'Rajan K. Pillai',  initials:'RK', blood:'B+',  district:'Ernakulam',  lastVisit:'12 Jul 2025', condition:'Diabetes, BP',         status:'monitor',  age:34, gender:'Male',   state:'West Bengal', mobile:'+91 94470 12345', allergies:'None',            meds:'Metformin 500mg, Amlodipine 5mg', notes:'Blood glucose borderline. Monitor closely.'},
+  {id:'KL-MLP-24003812B', name:'Fatima Begum',     initials:'FB', blood:'A+',  district:'Malappuram', lastVisit:'10 Jul 2025', condition:'Severe Hyperglycaemia', status:'critical', age:48, gender:'Female', state:'West Bengal', mobile:'+91 99460 87654', allergies:'Penicillin',      meds:'Insulin Glargine, Metformin',     notes:'⚠️ Immediate medication review. HbA1c overdue.'},
+  {id:'KL-TSR-24001209C', name:'Sanjay Yadav',     initials:'SY', blood:'O+',  district:'Thrissur',   lastVisit:'08 Jul 2025', condition:'Post-op Infection',     status:'critical', age:29, gender:'Male',   state:'Bihar',       mobile:'+91 70120 44321', allergies:'Sulfa drugs',    meds:'Cefuroxime 500mg, Paracetamol',   notes:'⚠️ Wound site review today. Possible antibiotic change.'},
+  {id:'KL-EKM-24005501A', name:'Murugan S.',       initials:'MS', blood:'AB+', district:'Ernakulam',  lastVisit:'05 Jul 2025', condition:'Hypertension',          status:'monitor',  age:52, gender:'Male',   state:'Tamil Nadu',  mobile:'+91 81290 55100', allergies:'Aspirin',        meds:'Amlodipine 5mg, Telmisartan 40mg',notes:'BP elevated. Lipid panel ordered.'},
+  {id:'KL-KZD-24007320D', name:'Kamala Devi',      initials:'KD', blood:'B-',  district:'Kozhikode',  lastVisit:'01 Jul 2025', condition:'Routine + Vaccination', status:'stable',   age:38, gender:'Female', state:'Karnataka',   mobile:'+91 94001 77823', allergies:'None',            meds:'None',                            notes:'Flu vaccination overdue 6 weeks.'},
+  {id:'KL-PKD-25002188E', name:'Anwar Hussain',    initials:'AH', blood:'O-',  district:'Palakkad',   lastVisit:'15 Jul 2025', condition:'Respiratory Complaint', status:'monitor',  age:41, gender:'Male',   state:'Odisha',      mobile:'+91 98760 12200', allergies:'NSAIDs',         meds:'Salbutamol Inhaler, Montelukast',  notes:'Chest CT ordered. Review inhaler use.'},
+  {id:'KL-WYD-25003001F', name:'Bindu Krishnan',   initials:'BK', blood:'A-',  district:'Wayanad',    lastVisit:'14 Jul 2025', condition:'General Checkup',       status:'active',   age:27, gender:'Female', state:'Kerala',      mobile:'+91 89120 55640', allergies:'None',            meds:'Iron + Folic Acid',               notes:'Routine checkup. All vitals normal.'},
+  {id:'KL-IDK-25004500G', name:'Dipak Roy',        initials:'DR', blood:'B+',  district:'Idukki',     lastVisit:'13 Jul 2025', condition:'New Patient Reg.',      status:'new',      age:23, gender:'Male',   state:'West Bengal', mobile:'+91 77090 30091', allergies:'Unknown',        meds:'None',                            notes:'First visit. Basic panel ordered.'},
+];
+
+const AVATAR_COLORS = ['#0ea5a0','#7c3aed','#d97706','#059669','#dc2626','#3d5a9e','#ea580c','#0e9282'];
+
+let filteredPatients = [...PATIENTS];
+let activeFilter = 'All';
+
+/* ── Build table ── */
+function buildTable(patients){
+  const tbody = document.getElementById('patientTbody');
+  document.getElementById('tableCount').textContent = `Showing ${patients.length} patient${patients.length!==1?'s':''}`;
+  tbody.innerHTML = patients.map((p,i) => {
+    const statusMap = {
+      critical:{cls:'sp-critical',label:'Critical'},
+      monitor :{cls:'sp-monitor', label:'Monitor'},
+      stable  :{cls:'sp-stable',  label:'Stable'},
+      active  :{cls:'sp-active',  label:'Active'},
+      new     :{cls:'sp-new',     label:'New'},
+    };
+    const s = statusMap[p.status] || {cls:'sp-stable',label:'Stable'};
+    return `
+    <tr onclick="openPanel('${p.id}')">
+      <td>
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div class="pt-avatar" style="background:${AVATAR_COLORS[i%AVATAR_COLORS.length]};">${p.initials}</div>
+          <div>
+            <div class="pt-name">${p.name}</div>
+            <div class="pt-id">${p.id}</div>
+          </div>
+        </div>
+      </td>
+      <td><span style="font-weight:700;color:var(--red);">${p.blood}</span></td>
+      <td>${p.district}</td>
+      <td>${p.lastVisit}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.condition}</td>
+      <td><span class="status-pill ${s.cls}">${s.label}</span></td>
+      <td>
+        <div class="pt-actions">
+          <button class="pt-btn pt-btn-view" onclick="event.stopPropagation();openPanel('${p.id}')"><i class="bi bi-eye-fill"></i> View</button>
+          <button class="pt-btn pt-btn-note" onclick="event.stopPropagation();openPanel('${p.id}')"><i class="bi bi-pencil-fill"></i></button>
+          ${p.status==='critical'?`<button class="pt-btn pt-btn-alert" onclick="event.stopPropagation();"><i class="bi bi-flag-fill"></i></button>`:''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+buildTable(PATIENTS);
+
+/* ── Filter ── */
+function setFilter(filter, el){
+  document.querySelectorAll('.sf-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = filter;
+  applyFilters();
+}
+function filterTable(q){
+  applyFilters(q);
+}
+function applyFilters(q){
+  const query = (q || document.getElementById('tableSearch').value).toLowerCase();
+  filteredPatients = PATIENTS.filter(p => {
+    const matchFilter = activeFilter==='All' || p.status===activeFilter.toLowerCase();
+    const matchQ = !query ||
+      p.name.toLowerCase().includes(query) ||
+      p.id.toLowerCase().includes(query) ||
+      p.blood.toLowerCase().includes(query) ||
+      p.district.toLowerCase().includes(query) ||
+      p.condition.toLowerCase().includes(query);
+    return matchFilter && matchQ;
+  });
+  buildTable(filteredPatients);
+}
+
+/* global topbar search */
+function liveSearch(v){ document.getElementById('tableSearch').value=v; applyFilters(v); }
+
+/* ── Patient Detail Panel ── */
+function openPanel(id){
+  const p = PATIENTS.find(pt=>pt.id===id);
+  if(!p) return;
+  const i = PATIENTS.indexOf(p);
+  const color = AVATAR_COLORS[i%AVATAR_COLORS.length];
+
+  document.getElementById('pdpInfo').innerHTML = `
+    <div class="pdp-avatar" style="background:${color};">${p.initials}</div>
+    <div>
+      <div class="pdp-name">${p.name}</div>
+      <div class="pdp-id">${p.id}</div>
+      <div class="pdp-meta">
+        <div class="pdp-meta-item"><div class="pdp-meta-label">Blood</div><div class="pdp-meta-val" style="color:#f87171;">${p.blood}</div></div>
+        <div class="pdp-meta-item"><div class="pdp-meta-label">Age</div><div class="pdp-meta-val">${p.age} yrs</div></div>
+        <div class="pdp-meta-item"><div class="pdp-meta-label">Gender</div><div class="pdp-meta-val">${p.gender}</div></div>
+        <div class="pdp-meta-item"><div class="pdp-meta-label">District</div><div class="pdp-meta-val">${p.district}</div></div>
+      </div>
+    </div>`;
+
+  const statusMap = {critical:'sp-critical',monitor:'sp-monitor',stable:'sp-stable',active:'sp-active',new:'sp-new'};
+
+  document.getElementById('pdpBody').innerHTML = `
+    <!-- Basic Info -->
+    <div class="pdp-section">
+      <div class="pdp-section-title"><i class="bi bi-person-fill"></i> Patient Information</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+        ${infoRow('Mobile',p.mobile)}
+        ${infoRow('State of Origin',p.state)}
+        ${infoRow('Allergies','<span style="color:var(--red);font-weight:600;">'+(p.allergies||'None')+'</span>')}
+        ${infoRow('Status','<span class="status-pill '+statusMap[p.status]+'" style="font-size:.7rem;">'+(p.status.charAt(0).toUpperCase()+p.status.slice(1))+'</span>')}
+      </div>
+    </div>
+
+    <!-- Conditions & Meds -->
+    <div class="pdp-section">
+      <div class="pdp-section-title"><i class="bi bi-heart-pulse-fill"></i> Clinical Summary</div>
+      <div style="background:var(--surface2);border:1px solid var(--border-light);border-radius:10px;padding:.85rem;margin-bottom:.6rem;">
+        <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;">Condition</div>
+        <div style="font-size:.85rem;font-weight:600;color:var(--ink);">${p.condition}</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border-light);border-radius:10px;padding:.85rem;">
+        <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;">Current Medications</div>
+        <div style="font-size:.83rem;color:var(--body);">${p.meds}</div>
+      </div>
+    </div>
+
+    <!-- Recent Records -->
+    <div class="pdp-section">
+      <div class="pdp-section-title"><i class="bi bi-file-medical-fill"></i> Health Records</div>
+      <div class="record-chip">
+        <div class="rc-icon" style="background:var(--teal-pale);color:var(--teal);"><i class="bi bi-droplet-half"></i></div>
+        <div><div class="rc-name">CBC Blood Panel</div><div class="rc-date">12 Jul 2025</div></div>
+        <span class="rc-badge" style="background:var(--teal-pale);color:var(--teal);">Normal</span>
+      </div>
+      <div class="record-chip">
+        <div class="rc-icon" style="background:var(--green-pale);color:var(--green);"><i class="bi bi-prescription2"></i></div>
+        <div><div class="rc-name">Last Prescription</div><div class="rc-date">${p.lastVisit}</div></div>
+        <span class="rc-badge" style="background:var(--green-pale);color:var(--green);">Active</span>
+      </div>
+    </div>
+
+    <!-- Doctor Notes -->
+    <div class="pdp-section">
+      <div class="pdp-section-title"><i class="bi bi-pencil-fill"></i> Doctor's Notes</div>
+      <div style="background:var(--amber-pale);border:1px solid rgba(217,119,6,.2);border-radius:10px;padding:.85rem;font-size:.83rem;color:var(--body);line-height:1.6;margin-bottom:.75rem;">${p.notes}</div>
+      <label style="font-size:.77rem;font-weight:600;color:var(--body);display:block;margin-bottom:.35rem;">Add Note</label>
+      <textarea class="note-area" rows="3" placeholder="Write clinical observations, follow-up instructions…"></textarea>
+      <button class="btn-primary-kc" style="margin-top:.6rem;width:100%;justify-content:center;">
+        <i class="bi bi-save2-fill"></i> Save Note to Record
+      </button>
+    </div>`;
+
+  document.getElementById('patientPanel').classList.add('open');
+  document.getElementById('panelOverlay').classList.add('show');
+}
+
+function infoRow(label, val){
+  return `<div style="background:var(--surface2);border:1px solid var(--border-light);border-radius:9px;padding:.65rem .8rem;">
+    <div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;">${label}</div>
+    <div style="font-size:.83rem;font-weight:600;color:var(--ink);margin-top:2px;">${val}</div>
+  </div>`;
+}
+
+function closePanel(){
+  document.getElementById('patientPanel').classList.remove('open');
+  document.getElementById('panelOverlay').classList.remove('show');
+}
+
+function openNewPatient(){
+  window.location.href='register.html';
+}
+
+/* ── Sidebar ── */
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+/* ── Date / Greeting ── */
+(function(){
+  const now = new Date();
+  const h = now.getHours();
+  const g = h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('docGreeting').textContent = g+', Doctor';
+  const dateStr = now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('topbarDate').textContent = dateStr;
+  document.getElementById('scheduleDate').textContent = dateStr;
+})();
+
+/* ── QR Scanner ── */
+let html5QrcodeScanner = null;
+
+function openQrScanner() {
+  document.getElementById('qrOverlay').classList.add('show');
+  document.getElementById('qrPanel').classList.add('open');
+  
+  if (!html5QrcodeScanner) {
+    html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: {width: 250, height: 250} });
+  }
+  
+  html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+}
+
+function closeQrScanner() {
+  document.getElementById('qrOverlay').classList.remove('show');
+  document.getElementById('qrPanel').classList.remove('open');
+  if (html5QrcodeScanner) {
+    html5QrcodeScanner.clear().catch(error => {
+      console.error("Failed to clear html5QrcodeScanner - ", error);
+    });
+  }
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+  closeQrScanner();
+  // Attempt to find the patient id in the system and show their profile, or show a mock.
+  let p = PATIENTS.find(pt => pt.id === decodedText);
+  if(p) {
+    openPanel(decodedText);
+  } else {
+    // For demo purposes, we alert and open a demo profile
+    alert("Patient QR scanned: " + decodedText);
+    openPanel('KL-EKM-25001247A');
+  }
+}
+
+function onScanFailure(error) {
+  // handle scan failure
+}
+</script>
+
+<!-- ════ QR SCANNER PANEL ════ -->
+<div class="panel-overlay" id="qrOverlay" onclick="closeQrScanner()"></div>
+<div class="patient-detail-panel" id="qrPanel" style="width:400px; z-index: 500;">
+  <div class="pdp-header" style="padding:1rem;">
+    <button class="pdp-close" onclick="closeQrScanner()"><i class="bi bi-x-lg"></i></button>
+    <div class="pdp-patient-info" style="align-items:center;">
+      <div class="pdp-avatar" style="background:var(--teal);"><i class="bi bi-qr-code-scan"></i></div>
+      <div>
+        <div class="pdp-name">Scan Patient QR</div>
+        <div class="pdp-id">Point camera at QR Code</div>
+      </div>
+    </div>
+  </div>
+  <div class="pdp-body" style="display:flex;flex-direction:column;align-items:center;background:#fafafa;padding-top:2rem;">
+    <div id="qr-reader" style="width:100%;max-width:350px;"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+
+<!-- Google Translate Script -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+\n</body>
+</html>
